@@ -23,7 +23,7 @@ async def omg(ctx):
     print(f'sending kaomoji (๑>ᴗ<๑)')
     await ctx.send('(๑•́o•̀๑)')
 
-@bot.slash_command(name='gpt')
+@bot.slash_command(name='gpt', help='Asks a trusty gpt-3.5 with a given argument')
 async def gpt(ctx, arg):
     response = ask_gpt(arg)
     await ctx.respond(response)
