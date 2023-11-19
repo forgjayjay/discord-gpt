@@ -7,7 +7,6 @@ from threading import Timer
 load_dotenv()
 KEY = os.getenv('OPENAI_API_KEY')
 
-
 client = OpenAI()
 client.api_key = KEY
 
@@ -17,8 +16,9 @@ context = [default_message]
 def clear_context():
     context.clear
     context.append(default_message)
+    print('Context post-clear: ' + ' '.join(context))
 
-timer = Timer(30 * 60, clear_context())
+timer = Timer(10 * 60, clear_context())
 
 def ask_gpt(arg):
     if(timer.is_alive() == False):
@@ -33,5 +33,8 @@ def ask_gpt(arg):
     )
     response = completion.choices[0].message.content
     context.append(response + ' ')
-    print(context)
     return response
+
+def split_on_dot(string):
+    split = string[:1900].rfind('.')
+    return [string[:split], string[split:len(string)-1]]

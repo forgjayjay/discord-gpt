@@ -4,7 +4,7 @@ import random
 
 from discord.ext import commands
 from dotenv import load_dotenv
-from bot.gptapi import ask_gpt
+from bot.gptapi import ask_gpt, split_on_dot
 from bot.emoticons import emoticons
 
 load_dotenv()
@@ -28,10 +28,16 @@ async def kaomoji(ctx):
 async def gpt(ctx, argument):
     await ctx.defer()
     response = ask_gpt(argument)
-    await ctx.respond(response)
+    if(len(response) > 1900):
+        response_arr = split_on_dot(response)
+        for string in response_arr:
+            await ctx.send(string)
+    else:
+        await ctx.respond(response)
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} is ready and online!')
+
 
 bot.run(TOKEN)
