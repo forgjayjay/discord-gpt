@@ -4,7 +4,7 @@ import random
 
 from discord.ext import commands
 from dotenv import load_dotenv
-from bot.gptapi import ask_gpt, split_on_dot
+from bot.gptapi import ask_gpt, clear_context, split_on_dot
 from bot.emoticons import emoticons
 
 load_dotenv()
@@ -26,14 +26,19 @@ async def kaomoji(ctx):
 
 @bot.slash_command(name='gpt', help='Asks a trusty gpt-3.5 with a given argument')
 async def gpt(ctx, argument):
+    print()
     await ctx.defer()
-    response = ask_gpt(argument)
+    response = ask_gpt(argument, ctx.channel.id)
     if(len(response) > 1900):
         response_arr = split_on_dot(response)
         for string in response_arr:
             await ctx.send(string)
     else:
         await ctx.respond(response)
+
+@bot.slash_command(name='clear-context', help='Clears context')
+async def gpt(ctx):
+    clear_context(ctx.channel.id)
 
 @bot.event
 async def on_ready():
